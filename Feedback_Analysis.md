@@ -1,8 +1,4 @@
-# Feedback Analysis using Machine Learning: A Technical Overview
-
-Feedback analysis is a critical task for businesses aiming to extract valuable insights from various sources like customer reviews, survey responses, and social media comments. Machine learning offers efficient methods to automate this process, enabling businesses to gain actionable insights from feedback data. Here's a detailed technical explanation of how machine learning can be applied to feedback analysis:
-
-## 1. Libraries to be imported
+## Importing necessary libraries
 
 ```python
 import numpy as np
@@ -14,60 +10,152 @@ import warnings
 warnings.filterwarnings('ignore')
 ```
 
-## 2. Data Preprocessing
-## **Loading Data**
+## Loading Data
 
 ```python
+#pip install seaborn
 #df_class=pd.read_csv("/content/survey_data.csv")
 df_class=pd.read_csv("https://raw.githubusercontent.com/sijuswamy/Intel-Unnati-sessions/main/Feed_back_data.csv")
-```
-## **Showing first 5 datas**
-```python
 df_class.head()
 ```
 
-## **Data Wrangling**
+## Data wrangling
 
 ```python
 df_class.info()
 df_class = df_class.drop(['Timestamp','Email ID','Please provide any additional comments, suggestions, or feedback you have regarding the session. Your insights are valuable and will help us enhance the overall learning experience.'],axis=1)
+df_class.info()
+df_class.columns = ["Name","Branch","Semester","Resourse Person","Content Quality","Effeciveness","Expertise","Relevance","Overall Organization"]
+df_class.sample(5)
+# checking for null
+df_class.isnull().sum().sum()
+# dimension
+df_class.shape
 ```
 
-- **Text Cleaning**: Eliminate noise from text data, including punctuation, special characters, and stopwords, to enhance the quality of the data.
-- **Tokenization**: Segment text into individual tokens or words, making it easier to process.
-- **Normalization**: Standardize text by converting all words to lowercase and removing accents for consistency.
-- **Vectorization**: Represent text data numerically, using techniques like TF-IDF (Term Frequency-Inverse Document Frequency) or word embeddings, to prepare it for machine learning algorithms.
+## Exploratory Data Analysis
 
-## 3. Sentiment Analysis
-- **Binary Classification**: Use machine learning models to classify feedback as positive or negative based on the sentiment expressed.
-- **Multi-Class Classification**: Employ algorithms to categorize feedback into multiple sentiment classes, such as positive, neutral, and negative.
-- **Deep Learning**: Utilize neural networks to perform more intricate sentiment analysis tasks, capturing nuanced sentiment expressions.
+```python
+## creating a percentage analysis of RP-wise distribution of data
+round(df_class["Resourse Person"].value_counts(normalize=True)*100,2)
+## creating a percentage analysis of RP-wise distribution of data
+round(df_class["Name"].value_counts(normalize=True)*100,2)
+```
 
-## 4. Topic Modeling
-- **LDA (Latent Dirichlet Allocation)**: Apply probabilistic modeling to uncover latent topics within feedback data.
-- **NMF (Non-Negative Matrix Factorization)**: Use matrix factorization techniques to extract meaningful topics from text.
+## Visualization
 
-## 5. Aspect-Based Sentiment Analysis
-- **Fine-Grained Analysis**: Identify specific aspects or features mentioned in feedback (e.g., product quality, customer service) and determine the sentiment associated with each aspect.
+```python
+ax = plt.subplot(1,2,1)
+ax = sns.countplot(x='Resourse Person', data=df_class)
+#ax.bar_label(ax.containers[0])
+plt.title("Faculty-wise distribution of data", fontsize=20,color = 'Brown',pad=20)
+ax =plt.subplot(1,2,2)
+ax=df_class['Resourse Person'].value_counts().plot.pie(explode=[0.1, 0.1,0.1,0.1],autopct='%1.2f%%',shadow=True);
+ax.set_title(label = "Resourse Person", fontsize = 20,color='Brown',pad=20);
+```
 
-## 6. Entity Recognition
-- **Named Entity Recognition (NER)**: Employ machine learning models to identify and categorize entities mentioned in feedback, such as product names, locations, or people.
+## Summary of Responses
 
-## 7. Feedback Summarization
-- **Text Summarization**: Utilize algorithms to generate concise summaries of longer feedback texts, capturing the essential information.
-- **Key Phrase Extraction**: Identify and extract important phrases or keywords from feedback data to highlight key points.
+```python
+sns.boxplot(y=df_class['Resourse Person'],x=df_class['Content Quality'])
+plt.show()
+sns.boxplot(y=df_class['Resourse Person'],x=df_class['Effeciveness'])
+plt.show()
+df_class.info()
+sns.boxplot(y=df_class['Resourse Person'],x=df_class['Expertise'])
+plt.show()
+sns.boxplot(y=df_class['Resourse Person'],x=df_class['Relevance'])
+plt.show()
+sns.boxplot(y=df_class['Resourse Person'],x=df_class['Overall Organization'])
+plt.show()
+sns.boxplot(y=df_class['Resourse Person'],x=df_class['Branch'])
+plt.show()
+sns.boxplot(y=df_class['Branch'],x=df_class['Content Quality'])
+plt.show()
+```
 
-## 8. Feedback Classification
-- **Topic Classification**: Classify feedback into predefined topics or categories using machine learning algorithms.
-- **Intent Classification**: Determine the underlying intent or purpose behind feedback (e.g., inquiry, complaint, suggestion) using classification models.
+# Using K-means Clustering to identify segmentation over student's satisfaction
 
-## 9. Machine Learning Models
-- **Supervised Learning**: Train machine learning models using labeled data to perform sentiment analysis and classification tasks.
-- **Unsupervised Learning**: Utilize unsupervised learning techniques to discover patterns and topics in feedback data without the need for labeled examples.
+## Finding the best value of k using elbow method
 
-## 10. Evaluation Metrics
-- **Accuracy, Precision, Recall, F1-score**: Use these metrics to assess the performance of machine learning models for feedback analysis tasks.
-- **Confusion Matrix**: Visualize the performance of classification models, providing insights into true positive, false positive, true negative, and false negative predictions.
+```python
+input_col=["Content Quality","Effeciveness","Expertise","Relevance","Overall Organization"]
+X=df_class[input_col].values
+# Initialize an empty list to store the within-cluster sum of squares
+from sklearn.cluster import KMeans
+wcss = []
 
-By employing machine learning techniques for feedback analysis, businesses can efficiently process and analyze large volumes of feedback data, gaining valuable insights that can drive decision-making and improve customer experiences.
+# Try different values of k
+for k in range(1, 11):
+    kmeans = KMeans(n_clusters=k,n_init='auto', random_state=42)
+    kmeans.fit(X)
+    wcss.append(kmeans.inertia_)# here inertia calculate sum of square distance in each cluster
+# Plot the within-cluster sum of squares for different values of k
+plt.plot(range(1, 11), wcss, marker='o')
+plt.xlabel('Number of Clusters (k)')
+plt.ylabel('Within-Cluster Sum of Squares (WCSS)')
+plt.title('Elbow Method')
+plt.show()
 
+```
+## Using Gridsearch method
+
+```python
+# Define the parameter grid
+from sklearn.model_selection import GridSearchCV
+
+param_grid = {'n_clusters': [2, 3, 4, 5, 6]}
+
+# Create a KMeans object
+kmeans = KMeans(n_init='auto',random_state=42)
+
+# Create a GridSearchCV object
+grid_search = GridSearchCV(kmeans, param_grid, cv=5)
+
+# Perform grid search
+grid_search.fit(X)
+
+# Get the best parameters and the best score
+best_params = grid_search.best_params_
+best_score = grid_search.best_score_
+print("Best Parameters:", best_params)
+print("Best Score:", best_score)
+```
+
+## Implementing K-means clustering
+
+```python
+# Perform k-means clustering
+k = 3 # Number of clusters
+kmeans = KMeans(n_clusters=k,n_init='auto', random_state=42)
+kmeans.fit(X)
+```
+
+##### KMeans(n_clusters=3, n_init='auto', random_state=42)
+##### In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook.
+##### On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.
+
+
+## Extracting labels and cluster centers
+
+```python
+# Get the cluster labels and centroids
+labels = kmeans.labels_
+centroids = kmeans.cluster_centers_
+
+# Add the cluster labels to the DataFrame
+df_class['Cluster'] = labels
+df_class.head()
+```
+
+## Visualizing the clustering using first two features
+
+```python
+# Visualize the clusters
+plt.scatter(X[:, 1], X[:, 2], c=labels, cmap='viridis')
+plt.scatter(centroids[:,1], centroids[:, 2], marker='X', s=200, c='red')
+plt.xlabel(input_col[1])
+plt.ylabel(input_col[2])
+plt.title('K-means Clustering')
+plt.show()
+```
