@@ -256,3 +256,7 @@ plt.show()
 ```
 ![image](https://github.com/JobinPius/Python-for-ML/assets/160459885/f39e3b0b-ebd4-483c-aeda-edb1f7c15a28)
 
+## Result and Conclusion
+Segmentation of Feedback: The clustering revealed distinct segments of participants based on their satisfaction levels and perceptions. This can help in tailoring follow-up actions and improvements to meet the specific needs of each group.
+Areas for Improvement: Analysis of the ratings across different dimensions can highlight areas where the session could be improved, such as the effectiveness of delivery methods or the relevance of content to real-world scenarios.
+Resource Person Performance: Feedback on resource persons can be used to identify areas of strength and opportunities for professional development.
