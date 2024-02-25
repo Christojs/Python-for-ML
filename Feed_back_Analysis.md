@@ -1,3 +1,9 @@
+ # Feedback Analysis for Intel course
+
+## Introduction
+
+The report aims to provide valuable insights into areas of strength and areas for improvement, ultimately enhancing the teaching and learning experience for both students and teachers.
+
 ## Importing necessary libraries
 
 ```python
@@ -19,6 +25,7 @@ df_class=pd.read_csv("https://raw.githubusercontent.com/sijuswamy/Intel-Unnati-s
 df_class.head()
 ```
 
+
 ## Data wrangling
 
 ```python
@@ -33,16 +40,27 @@ df_class.isnull().sum().sum()
 df_class.shape
 ```
 
-## Exploratory Data Analysis
+## Dataset overview
+The dataset contains feedback responses from participants of a session. It includes several columns:
 
-```python
-## creating a percentage analysis of RP-wise distribution of data
-round(df_class["Resourse Person"].value_counts(normalize=True)*100,2)
-## creating a percentage analysis of RP-wise distribution of data
-round(df_class["Name"].value_counts(normalize=True)*100,2)
-```
+Timestamp: It includes the date and time when the feedback was submitted by the student.
 
-## Visualization
+Name of the Participant: The name of the participant who provided the feedback.
+
+Email ID: The email address of the participant.
+
+Branch: from which branch the student comes from.
+
+Semester: The current semester of the participant.
+
+Resource Person of the session: The resource person for the session.
+
+Ratings: It is the rating provided by the participant for the teachers based on their effectiveness,quality of the content and so on
+
+
+## Exploratory Data Analysis (EDA)
+Resource Person-wise Distribution: The analysis seeks to highlight patterns and trends in the feedback data, offering actionable recommendations to improve the effectiveness and impact of resource persons in educational settings.
+Participant Name Analysis:This report provides an analysis of participant names in the context of an educational program or event.
 
 ```python
 ax = plt.subplot(1,2,1)
@@ -53,6 +71,17 @@ ax =plt.subplot(1,2,2)
 ax=df_class['Resourse Person'].value_counts().plot.pie(explode=[0.1, 0.1,0.1,0.1],autopct='%1.2f%%',shadow=True);
 ax.set_title(label = "Resourse Person", fontsize = 20,color='Brown',pad=20);
 ```
+
+Visualization: created to understand the faculty-wise distribution of data  across different categories
+```python
+## creating a percentage analysis of RP-wise distribution of data
+round(df_class["Resourse Person"].value_counts(normalize=True)*100,2)
+## creating a percentage analysis of RP-wise distribution of data
+round(df_class["Name"].value_counts(normalize=True)*100,2)
+```
+
+
+
 
 ## Summary of Responses
 
