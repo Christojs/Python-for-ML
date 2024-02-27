@@ -3,6 +3,9 @@
 ## Introduction
 
 This student behaviour report presents an analysis of student behaviour with regards to absenteece,raisedhands and other relevant aspects.
+The dataset comprises several features related to student behavior, including demographic information (gender, nationality, place of birth), academic details (stage, grade, section, topic, semester), engagement metrics (raised hands, visited resources, announcements view, discussion), parental engagement (parent answering survey, parent school satisfaction), absence records (student absence days), and class performance (class).
+
+To proceed with exploratory data analysis (EDA) and k-means clustering, we start by summarizing the dataset's statistical properties, checking for missing values, and analyzing the distributions of numerical and categorical features. This approach helps identify patterns, outliers, and the data's structure, providing insights into how to approach the k-means clustering.
 
 ## Importing necessary libraries
 
@@ -17,6 +20,15 @@ warnings.filterwarnings('ignore')
 ```
 
 ## Loading Data
+### Data Summary
+
+The dataset consists of 480 entries with no missing values across all features. A brief summary of the numerical features includes:
+
+- *Raised Hands*: Average ~ 46.78, Min 0, Max 100, Std Dev 30.78
+- *Visited Resources*: Average ~ 54.80, Min 0, Max 99
+- *Announcements View*: Average ~ 37.92, Min 0, Max 98
+- *Discussion*: Average ~ 43.28, Min 1, Max 99
+
 
 ```python
 #pip install seaborn
@@ -25,6 +37,21 @@ df_class.head()
 ```
 
 ## Data wrangling
+### Categorical Data Distributions
+
+- *Gender*: Balanced distribution between male (M) and female (F) students.
+- *Nationality and Place of Birth*: Wide range including Kuwait, Jordan, Palestine, Iraq, Lebanon, Egypt, among others.
+- *StageID*: Includes lower level, middle school, and high school.
+- *GradeID*: Ranges from G-02 to G-12.
+- *SectionID*: Distributed across sections A, B, and C.
+- *Topic*: Subjects include IT, Math, Arabic, Science, English, etc.
+- *Semester*: Covers both the first (F) and second (S) semesters.
+- *Relation*: Indicates the main respondent for the survey (mother/father).
+- *ParentAnsweringSurvey*: Yes/No responses.
+- *ParentschoolSatisfaction*: Satisfaction levels (Good/Bad).
+- *StudentAbsenceDays*: Categorized as "Under-7" or "Above-7" days.
+- *Class*: Performance categories labeled as Low (L), Middle (M), and High (H).
+
 
 ```python
 df_class.info()
@@ -40,28 +67,18 @@ df_class.shape
 ```
 
 
-## Dataset overview
-The dataset contains feedback responses from participants of a session. It includes several columns:
-
-  * Timestamp: It includes the date and time when the feedback was submitted by the student.
-
-  * Name of the Participant: The name of the participant who provided the feedback.
-
-  * Email ID: The email address of the participant.
-
-  * Branch: from which branch the student comes from.
-
-  * Semester: The current semester of the participant.
-
-  * Resource Person of the session: The resource person for the session.
-
-  * Ratings: It is the rating provided by the participant for the teachers who conducted the session based on several factors like content quality,effectiveness 
-             etc
 
 
 ## Exploratory Data Analysis (EDA)
+#### Numerical Features Distribution Insights:
 
-   ```python
+- *Raised Hands*: The distribution shows a bimodal pattern, suggesting two distinct groups of students based on classroom participation.
+- *Visited Resources*: Distribution is somewhat bimodal, indicating varying levels of engagement with resources.
+- *Announcements View*: Skewed towards lower frequencies, suggesting that many students do not regularly check announcements.
+- *Discussion*: More uniform across the range but shows a slight skew towards lower engagement levels.
+
+
+ ```python
 ## creating a percentage analysis of RP-wise distribution of data
 round(df_class["Class"].value_counts(normalize=True)*100,2)
 ## creating a percentage analysis of RP-wise distribution of data
@@ -152,6 +169,11 @@ round(df_class["Topic"].value_counts(normalize=True)*100,2)
 
 
 # Using K-means Clustering to identify segmentation over student's behaviour
+
+#### Preparing for K-Means Clustering
+
+Given the varied scales of the numerical features, standardizing the data is crucial before clustering to ensure each feature contributes equally to the distance calculations. We will explore the optimal number of clusters using the elbow method and perform k-means clustering on the standardized data.
+
 
 ## For finding the best value of k using elbow method
 
@@ -245,4 +267,4 @@ plt.show()
 ![download](https://github.com/Christojs/Python-for-ML/assets/133338993/4cb5018d-6777-4009-a141-0ca3ca413ec8)
 
 ## Result and Conclusion
-Segmentation of Feedback: The clustering revealed distinct segments of participants based on their behaviour. This can help in tailoring follow-up actions and improvements to meet the specific needs of each group.
+This dataset's exploratory analysis reveals significant variability in student engagement metrics, suggesting potential for clustering to identify patterns or groups of similar student behaviors. The next steps involve k-means clustering to segment the student population based on engagement levels, further analyzed to derive actionable insights.
